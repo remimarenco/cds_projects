@@ -1,3 +1,9 @@
 [submodule "cds_projects/static/projects/wrn"]
 	path = cds_projects/static/projects/wrn
 	url = https://rmarenco@stash.broadinstitute.org/scm/cpds/wrn
+[submodule "cds_projects/static/projects/test_project_one"]
+	path = cds_projects/static/projects/test_project_one
+	url = https://github.com/remimarenco/test_project_one
+[submodule "cds_projects/static/projects/test_project_two"]
+	path = cds_projects/static/projects/test_project_two
+	url = https://github.com/remimarenco/test_project_two
