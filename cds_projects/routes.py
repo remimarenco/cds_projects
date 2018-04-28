@@ -35,13 +35,16 @@ def make_tree(path, name):
     else:
         for name in directory_content:
             fn = os.path.join(path, name)
-            if os.path.isdir(fn):
+            if name.startswith('.'):
+                continue
+            elif os.path.isdir(fn):
                 new_entry = make_tree(path=fn, name=name)
                 # If new_entry directory contains file, we add it, otherwise we continue
-                new_entry_file_entries = [entry for entry in new_entry.entries if isinstance(entry, File)]
+                new_entry_file_entries = [entry for entry in new_entry.entries]
                 if len(new_entry_file_entries) == 0:
                     continue
-            elif name.startswith('.') or not name.endswith('.html') or name.endswith('.htm'):
+            # Now only files left, we filter out all not .html or .htm
+            elif not name.endswith('.html') or name.endswith('.htm'):
                 continue
             else:
                 cleaned_path = fn.replace('cds_projects/static/projects/', '')
@@ -57,6 +60,7 @@ def index():
 
     return render_template('index.html', title='Home', tree=root_tree)
 
+
 @app.route('/<path:path>')
 def send_html(path):
-    return send_from_directory('projects', path)
+    return send_from_directory('static/projects', path)
