@@ -37,7 +37,11 @@ def make_tree(path, name):
             fn = os.path.join(path, name)
             if os.path.isdir(fn):
                 new_entry = make_tree(path=fn, name=name)
-            elif name.startswith('.'):
+                # If new_entry directory contains file, we add it, otherwise we continue
+                new_entry_file_entries = [entry for entry in new_entry.entries if isinstance(entry, File)]
+                if len(new_entry_file_entries) == 0:
+                    continue
+            elif name.startswith('.') or not name.endswith('.html') or name.endswith('.htm'):
                 continue
             else:
                 cleaned_path = fn.replace('cds_projects/static/projects/', '')
@@ -49,7 +53,6 @@ def make_tree(path, name):
 @app.route('/')
 def index():
     # Get content of projects folder
-    root_tree = None
     root_tree = make_tree(path='cds_projects/static/projects/', name='projects')
 
     return render_template('index.html', title='Home', tree=root_tree)
