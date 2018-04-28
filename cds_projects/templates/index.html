@@ -1,0 +1,23 @@
+{% macro display_tree(tree) -%}
+    <ul>
+        {% for entry in tree.entries %}
+            {% if entry.entries %}
+                <li>{{ entry.name }}</li>
+                {{ display_tree(entry) }}
+            {% else %}
+                <li><a href={{entry.path}}>{{entry.name}}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{%- endmacro %}
+
+<html>
+    <head>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        <h1>Hello CDS!</h1>
+        <h2>Here is the listing of our projects</h2>
+        {{ display_tree(tree) }}
+    </body>
+</html>
