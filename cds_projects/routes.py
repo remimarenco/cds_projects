@@ -1,7 +1,11 @@
+import json
 import os
+import subprocess
 
 from flask import render_template, request, send_from_directory, Flask
-from cds_projects import app
+from flask_restful import Resource, reqparse
+
+from cds_projects import app, api
 
 
 @app.route('/helloworld')
@@ -64,3 +68,26 @@ def index():
 @app.route('/<path:path>')
 def send_html(path):
     return send_from_directory('static/projects', path)
+
+
+# API
+project_dict = {
+    "test_project_one": "https://github.com/remimarenco/test_project_one.git",
+    "test_project_two": "https://github.com/remimarenco/test_project_two.git",
+    "wrn": "https://rmarenco@stash.broadinstitute.org/scm/cpds/wrn.git"
+}
+
+parser = reqparse.RequestParser()
+parser.add_argument("repository", type=dict)
+
+class PostCommit(Resource):
+    def post(self):
+        # git pull origin master from project_one in /static/projects
+        args = parser.parse_args()
+        repo_dict = args['repository']
+        project_name = repo_dict['name']
+        return subprocess.call(['git', '-C', 'cds_projects/static/projects/' + project_name,
+                         'pull', 'origin', 'master'])
+
+
+api.add_resource(PostCommit, '/api/push')
